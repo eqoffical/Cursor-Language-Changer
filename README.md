@@ -1,2 +1,2 @@
 # Cursor-Language-Changer
-Change cursor depending on language, please match cursors paths
+This is AutoHotkeys script, that change cursor depending on language, please match cursor file names and folders paths
