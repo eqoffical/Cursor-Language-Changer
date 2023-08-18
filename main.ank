@@ -1,0 +1,61 @@
+#SingleInstance, force
+#Persistent
+
+; Hide tray icon
+Menu, Tray, NoIcon
+
+blackPath := "C:\Custom Cursors\Posy Black\"
+whitePath := "C:\Custom Cursors\Posy White\"
+anotherWhitePath := "C:\Custom Cursors\Another Posy White\"
+
+SetTimer, CheckLang, 200
+
+CheckLang:
+  Suspend, Permit
+  currentLayout := DllCall("GetKeyboardLayout", "UInt", DllCall("GetWindowThreadProcessId", "UInt", WinActive("A"), "UInt", 0))
+
+  ; English
+  if (currentLayout = 0x4090409) {
+    SetCursors(blackPath)
+  }
+
+  ; Russian
+  else if (currentLayout = 0x4190419) {
+    SetCursors(anotherWhitePath)
+  }
+
+  ; Default for other layouts
+  else {
+    SetCursors(whitePath)
+  }
+  
+return
+
+SetCursors(path) {
+  ; Set your cursor filenames here
+  ibeamCursor := "Text Select.cur"
+  arrowCursor := "Normal Select.cur"
+  handCursor := "Link Select.cur"
+  appStartingCursor := "Working In Background.ani"
+  helpCursor := "Help Select.cur"
+
+  sizeWECursor := "Horizontal Resize.cur"
+  sizeNSCursor := "Vertical Resize.cur"
+  sizeNESWCursor := "Diagonal Resize 2.cur"
+  sizeNWSECursor := "Diagonal Resize 1.cur"
+  
+  RegWrite, REG_EXPAND_SZ, HKEY_CURRENT_USER, Control Panel\Cursors, IBeam, % path . ibeamCursor
+  RegWrite, REG_EXPAND_SZ, HKEY_CURRENT_USER, Control Panel\Cursors, Arrow, % path . arrowCursor
+  RegWrite, REG_EXPAND_SZ, HKEY_CURRENT_USER, Control Panel\Cursors, Hand, % path . handCursor
+  RegWrite, REG_EXPAND_SZ, HKEY_CURRENT_USER, Control Panel\Cursors, AppStarting, % path . appStartingCursor
+  RegWrite, REG_EXPAND_SZ, HKEY_CURRENT_USER, Control Panel\Cursors, Help, % path . helpCursor
+
+  RegWrite, REG_EXPAND_SZ, HKEY_CURRENT_USER, Control Panel\Cursors, SizeWE, % path . sizeWECursor
+  RegWrite, REG_EXPAND_SZ, HKEY_CURRENT_USER, Control Panel\Cursors, SizeNS, % path . sizeNSCursor
+  RegWrite, REG_EXPAND_SZ, HKEY_CURRENT_USER, Control Panel\Cursors, SizeNESW, % path . sizeNESWCursor
+  RegWrite, REG_EXPAND_SZ, HKEY_CURRENT_USER, Control Panel\Cursors, SizeNWSE, % path . sizeNWSECursor
+      
+  ; Make it stick
+  SPI_SETCURSORS := 0x57
+  result := DllCall("SystemParametersInfo", "UInt", SPI_SETCURSORS, "UInt", 0, "UInt", 0, "UInt", 0)
+}
